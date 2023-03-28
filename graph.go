@@ -1,67 +1,68 @@
 package main
 
 import (
-"database/sql"
-"fmt"
-"log"
-"os"
-"gonum.org/v1/plot"
-"gonum.org/v1/plot/plotter"
-"gonum.org/v1/plot/vg"
-_ "github.com/mattn/go-sqlite3"
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+
+	_ "github.com/mattn/go-sqlite3"
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/vg"
 )
 
 func main() {
-db, err := sql.Open("sqlite3", "./metrics.db")
-if err != nil {
-log.Fatal(err)
-}
-defer db.Close()
+	db, err := sql.Open("sqlite3", "./metrics.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
-rows, err := db.Query("SELECT id, count FROM schedule ORDER BY id")
-if err != nil {
-log.Fatal(err)
-}
-defer rows.Close()
+	rows, err := db.Query("SELECT date, count FROM schedule ORDER BY date")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
 
-var counts plotter.Values
-var ides []string
-for rows.Next() {
-var id string
-var count float64
-if err := rows.Scan(&id, &count); err != nil {
-log.Fatal(err)
-}
-ides = append(ides, id)
-counts = append(counts, count)
-}
+	var counts plotter.Values
+	var dates []string
+	for rows.Next() {
+		var date string
+		var count float64
+		if err := rows.Scan(&date, &count); err != nil {
+			log.Fatal(err)
+		}
+		dates = append(dates, date)
+		counts = append(counts, count)
+	}
 
-p:= plot.New()
-//if err != nil {
-//log.Fatal(err)
-//}
+	p := plot.New()
+	//if err != nil {
+	//log.Fatal(err)
+	//}
 
-p.Title.Text = "Flights per Day"
-p.X.Label.Text = "id"
-p.Y.Label.Text = "Count"
+	p.Title.Text = "Flights per Day"
+	p.X.Label.Text = "date"
+	p.Y.Label.Text = "Count"
 
-bars, err := plotter.NewBarChart(counts, vg.Points(20))
-if err != nil {
-log.Fatal(err)
-}
-bars.LineStyle.Width = vg.Length(0)
+	bars, err := plotter.NewBarChart(counts, vg.Points(20))
+	if err != nil {
+		log.Fatal(err)
+	}
+	bars.LineStyle.Width = vg.Length(0)
 
-p.Add(bars)
-p.NominalX(ides...)
+	p.Add(bars)
+	p.NominalX(dates...)
 
-f, err := os.Create("flights.png")
-if err != nil {
-log.Fatal(err)
-}
-defer f.Close()
+	f, err := os.Create("flights.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
-if err := p.Save(10*vg.Inch, 10*vg.Inch, "flights.png"); err != nil {
-log.Fatal(err)
-}
-fmt.Println("Graph created successfully")
+	if err := p.Save(20*vg.Inch, 10*vg.Inch, "flights.png"); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("График успешно создан")
 }
