@@ -1,0 +1,1 @@
+go run .\main.go .\response.go .\graph.go .\autoclear.go
