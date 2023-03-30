@@ -1,1 +1,1 @@
-go run .\main.go .\response.go .\graph.go .\autoclear.go
+go run ./main.go ./databasecreate.go ./autoclear.go ./response.go ./graph.go ./sending.go

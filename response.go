@@ -31,7 +31,7 @@ func response() {
 	departureAirport := "s9600379"
 	currentTime := time.Now()
 	date := currentTime.Format("2006-01-02")
-	//date := "2023-03-29"
+	//date := "2023-03-10"
 	url := fmt.Sprintf("https://api.rasp.yandex.net/v3.0/schedule/?apikey=%s&format=json&station=%s&date=%s&transport_types=plane", "751ddb3c-701e-480c-bf88-9327b8543f92", departureAirport, date)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -67,17 +67,11 @@ func response() {
 	}
 
 	// Подключение к базе данных SQLite
-	db, err := sql.Open("sqlite3", "metrics.db")
+	db, err := sql.Open("sqlite3", "./metrics.db")
 	if err != nil {
 		log.Fatal("Ошибка открытия БД: ", err)
 	}
 	defer db.Close()
-
-	// Создание таблицы в базе данных, если она не существует
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS schedule (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT NOT NULL, departureAirport TEXT NOT NULL, count INTEGER NOT NULL)")
-	if err != nil {
-		log.Fatal("Ошибка создания таблицы в БД: ", err)
-	}
 
 	// Запись метрики в базу данных
 	count := len(scheduleResponse.Shed)

@@ -6,12 +6,21 @@ import (
 
 func main() {
 	for {
+
+		create()
+
+		clear()
+
 		response()
 
 		clear()
 
 		graph()
 
-		time.Sleep(24 * time.Hour)
+		send()
+
+		//time.Sleep(24 * time.Hour)
+
+		time.Sleep(30 * time.Second)
 	}
 }

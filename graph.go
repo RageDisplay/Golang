@@ -38,13 +38,10 @@ func graph() {
 	}
 
 	p := plot.New()
-	//if err != nil {
-	//log.Fatal(err)
-	//}
 
-	p.Title.Text = "Flights per Day"
-	p.X.Label.Text = "date"
-	p.Y.Label.Text = "Count"
+	p.Title.Text = "Рейсов за день"
+	p.X.Label.Text = "Дата"
+	p.Y.Label.Text = "Количество"
 
 	bars, err := plotter.NewBarChart(counts, vg.Points(20))
 	if err != nil {
