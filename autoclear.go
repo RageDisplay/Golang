@@ -21,8 +21,8 @@ func clear() {
 		panic(err)
 	}
 
-	// Проверка количества записей и удаление первой, если оно превышает 15
-	if count > 15 {
+	// Проверка количества записей и удаление первой, если оно превышает 12
+	if count > 12 {
 		_, err = db.Exec("DELETE FROM schedule WHERE id = (SELECT MIN(id) FROM schedule)")
 		if err != nil {
 			panic(err)
