@@ -19,8 +19,8 @@ func main() {
 
 		send()
 
-		time.Sleep(24 * time.Hour)
+		time.Sleep(60 * time.Minute)
 
-		//time.Sleep(30 * time.Second)
+		//time.Sleep(2 * time.Second)
 	}
 }

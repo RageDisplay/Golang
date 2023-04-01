@@ -12,7 +12,7 @@ import (
 
 func send() {
 	// URL адрес для отправки POST-запроса с изображением
-	url := "https://api.imgbb.com/1/upload?expiration=600&key=4759b9b02b8b77232df840dee6d7991d"
+	url := "https://api.imgbb.com/1/upload?key=4759b9b02b8b77232df840dee6d7991d"
 
 	// имя (ключ) файла на сервере
 	fileKey := "image"
