@@ -13,12 +13,13 @@ import (
 )
 
 func graph() {
+	// Подключение к базе данных SQLite
 	db, err := sql.Open("sqlite3", "./metrics.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
+	//Получение метрик из БД
 	rows, err := db.Query("SELECT date, count FROM schedule ORDER BY date")
 	if err != nil {
 		log.Fatal(err)
@@ -51,13 +52,13 @@ func graph() {
 
 	p.Add(bars)
 	p.NominalX(dates...)
-
+	//Создание файла графика в формате PNG
 	f, err := os.Create("flights.png")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
-
+	//Задание размеров 
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, "flights.png"); err != nil {
 		log.Fatal(err)
 	}
