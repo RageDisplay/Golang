@@ -35,24 +35,18 @@ func response() {
 	url := fmt.Sprintf("https://api.rasp.yandex.net/v3.0/schedule/?apikey=%s&format=json&station=%s&date=%s&transport_types=plane", "751ddb3c-701e-480c-bf88-9327b8543f92", departureAirport, date)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println("Ошибка открытия БД: ", err)
-		restart()
-		//panic(err)
+		panic(err)
 	}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		restart()
-		//panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
-		restart()
-		//panic(err)
+		panic(err)
 	}
 
 	//Создание JSON
@@ -60,7 +54,7 @@ func response() {
 	file, err := os.Create("airport.json")
 	if err != nil {
 		fmt.Println("Ошибка в создании json:", err)
-		restart()
+		os.Exit(1)
 	}
 	defer file.Close()
 	file.Write(body)
@@ -69,17 +63,13 @@ func response() {
 	var scheduleResponse Shed
 	err = json.Unmarshal(body, &scheduleResponse)
 	if err != nil {
-		//log.Fatal("Ошибка разбора JSON-ответа API Яндекс.Расписание: ", err)
-		fmt.Println("Ошибка разбора JSON-ответа API Яндекс.Расписание: ", err)
-		restart()
+		log.Fatal("Ошибка разбора JSON-ответа API Яндекс.Расписание: ", err)
 	}
 
 	// Подключение к базе данных SQLite
 	db, err := sql.Open("sqlite3", "./metrics.db")
 	if err != nil {
-		//log.Fatal("Ошибка открытия БД: ", err)
-		fmt.Println("Ошибка открытия БД: ", err)
-		restart()
+		log.Fatal("Ошибка открытия БД: ", err)
 	}
 	defer db.Close()
 
@@ -87,15 +77,11 @@ func response() {
 	count := len(scheduleResponse.Shed)
 	stmt, err := db.Prepare("INSERT INTO schedule(date, departureAirport, count) values(?,?,?)")
 	if err != nil {
-		//log.Fatal("Ошибка подготовки запроса к БД: ", err)
-		fmt.Println("Ошибка подготовки запроса к БД: ", err)
-		restart()
+		log.Fatal("Ошибка подготовки запроса к БД: ", err)
 	}
 	_, err = stmt.Exec(scheduleResponse.Date, departureAirport, count)
 	if err != nil {
-		//log.Fatal("Ошибка выполнения запроса к БД: ", err)
-		fmt.Println("Ошибка выполнения запроса к БД: ", err)
-		restart()
+		log.Fatal("Ошибка выполнения запроса к БД: ", err)
 	}
 
 	log.Printf("Метрика успешно записана в базу данных (Дата: %s, Станция: %s, Количество рейсов: %d)", scheduleResponse.Date, departureAirport, count)

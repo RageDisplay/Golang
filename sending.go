@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -22,10 +23,7 @@ func send() {
 	// открытие файла
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 	defer file.Close()
 
@@ -36,35 +34,23 @@ func send() {
 	// добавление файла в тело запроса
 	part, err := writer.CreateFormFile(fileKey, filename)
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 	_, err = io.Copy(part, file)
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	// закрытие тела запроса
 	err = writer.Close()
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	// создание POST-запроса с телом запроса
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -72,10 +58,7 @@ func send() {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		clearlast()
-		restart()
-		//log.Fatal(err)
+		log.Fatal(err)
 	}
 	defer res.Body.Close()
 
