@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -13,16 +12,21 @@ import (
 )
 
 func graph() {
-	// Подключение к базе данных SQLite
 	db, err := sql.Open("sqlite3", "./metrics.db")
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
+		fmt.Println(err)
+		clearlast()
+		restart()
 	}
 	defer db.Close()
-	//Получение метрик из БД
+
 	rows, err := db.Query("SELECT date, count FROM schedule ORDER BY date")
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
+		fmt.Println(err)
+		clearlast()
+		restart()
 	}
 	defer rows.Close()
 
@@ -32,7 +36,10 @@ func graph() {
 		var date string
 		var count float64
 		if err := rows.Scan(&date, &count); err != nil {
-			log.Fatal(err)
+			//log.Fatal(err)
+			fmt.Println(err)
+			clearlast()
+			restart()
 		}
 		dates = append(dates, date)
 		counts = append(counts, count)
@@ -46,21 +53,30 @@ func graph() {
 
 	bars, err := plotter.NewBarChart(counts, vg.Points(20))
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
+		fmt.Println(err)
+		clearlast()
+		restart()
 	}
 	bars.LineStyle.Width = vg.Length(0)
 
 	p.Add(bars)
 	p.NominalX(dates...)
-	//Создание файла графика в формате PNG
+
 	f, err := os.Create("flights.png")
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
+		fmt.Println(err)
+		clearlast()
+		restart()
 	}
 	defer f.Close()
-	//Задание размеров 
+
 	if err := p.Save(10*vg.Inch, 10*vg.Inch, "flights.png"); err != nil {
-		log.Fatal(err)
+		//log.Fatal(err)
+		fmt.Println(err)
+		clearlast()
+		restart()
 	}
 	fmt.Println("График успешно создан")
 }
