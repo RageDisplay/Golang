@@ -17,11 +17,11 @@ func main() {
 
 		clear()
 
-		time.Sleep(5 * time.Second)
+		//time.Sleep(5 * time.Second)
 
 		response()
 
-		time.Sleep(5 * time.Second)
+		//time.Sleep(5 * time.Second)
 
 		clear()
 
