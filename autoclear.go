@@ -57,7 +57,6 @@ func clearlast() error {
 		//panic(err)
 	}
 
-	// Проверка количества записей и удаление первой, если оно превышает 12
 	_, err = db.Exec("DELETE FROM schedule WHERE id = (SELECT MAX(id) FROM schedule)")
 	if err != nil {
 		fmt.Println(err)
