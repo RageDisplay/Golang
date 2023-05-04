@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -23,9 +23,7 @@ func send() error {
 	file, err := os.Open(filename)
 	if err != nil {
 		clearlast()
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
 	}
 	defer file.Close()
 
@@ -37,31 +35,24 @@ func send() error {
 	part, err := writer.CreateFormFile(fileKey, filename)
 	if err != nil {
 		clearlast()
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
 	}
 	_, err = io.Copy(part, file)
 	if err != nil {
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
 	}
 
 	// закрытие тела запроса
 	err = writer.Close()
 	if err != nil {
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
+
 	}
 
 	// создание POST-запроса с телом запроса
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -70,11 +61,9 @@ func send() error {
 	res, err := client.Do(req)
 	if err != nil {
 		clearlast()
-		fmt.Println(err)
-		return nil
-		//log.Fatal(err)
+		return err
 	} else {
-		fmt.Println("График успешно отправлен")
+		log.Println("График успешно отправлен")
 	}
 
 	defer res.Body.Close()
@@ -90,7 +79,6 @@ func send() error {
 func delpic() error {
 	err := os.Remove("flights.png")
 	if err != nil {
-		//fmt.Println(err)
 		return nil
 	}
 	return nil
