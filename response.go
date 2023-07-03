@@ -32,7 +32,7 @@ func response() error {
 	currentTime := time.Now()
 	date := currentTime.Format("2006-01-02")
 	//date := "2023-03-10"
-	url := fmt.Sprintf("https://api.rasp.yandex.net/v3.0/schedule/?apikey=%s&format=json&station=%s&date=%s&transport_types=plane", "751ddb3c-701e-480c-bf88-9327b8543f92", departureAirport, date)
+	url := fmt.Sprintf("https://api.rasp.yandex.net/v3.0/schedule/?apikey=%s&format=json&station=%s&date=%s&transport_types=plane", "*****************", departureAirport, date)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
